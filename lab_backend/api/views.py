@@ -24,6 +24,26 @@ def get_subItems(request):
     serializer = SubItemSerializer(subItems, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def get_title(request,id):
+    title = Title.objects.get(id=id)
+    serializer = TitleSerializer(title, many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_item(request,id):
+    item = Item.objects.get(id=id)
+    serializer = TitleSerializer(item, many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_subItem(request,id):
+    subItem = SubItem.objects.get(id=id)
+    serializer = TitleSerializer(subItem, many=False)
+    return Response(serializer.data)
+
+
+
 
 # PUT views
 @api_view(['PUT'])
@@ -72,7 +92,7 @@ def delete_subItem(request,id):
     subItem.delete()
     return Response("sub-item was deleted")
 
-# POST methods 
+# POST views 
 
 @api_view(["POST"])
 def create_title(request):
@@ -82,13 +102,30 @@ def create_title(request):
         serializer.save()
     return Response(serializer.data)
 
-@api_view(["POST"])
+@api_view(['POST'])
 def create_item(request):
-    data = request.data
-    serializer = ItemSerializer(data=data)
-    if serializer.is_valid():
-        serializer.save()
-    return Response(serializer.data)
+    if request.method == 'POST':
+        serializer = ItemSerializer(data=request.data)
+        if serializer.is_valid():
+            print("serializer is valid")
+            serializer.save()
+            return Response(serializer.data)
+        else :
+            return Response(serializer.errors)
+        
+@api_view(['POST'])
+def create_subItem(request):
+    if request.method == 'POST':
+        serializer = SubItemSerializer(data=request.data)
+        if serializer.is_valid():
+            print("serializer is valid")
+            serializer.save()
+            return Response(serializer.data)
+        else :
+            return Response(serializer.errors)
+        
+
+
 
 
     
